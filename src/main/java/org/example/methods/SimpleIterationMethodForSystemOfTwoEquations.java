@@ -8,6 +8,7 @@ import org.example.calculatingTree.entities.values.Constant;
 import org.example.calculatingTree.entities.values.Variable;
 import org.example.entities.Function;
 import org.example.entities.Segment;
+import org.example.entities.TwoVariablesResult;
 
 public class SimpleIterationMethodForSystemOfTwoEquations {
     public static double findLambda(Function function, Segment[] segments, double accuracy) {
@@ -65,7 +66,7 @@ public class SimpleIterationMethodForSystemOfTwoEquations {
         return maxDelta;
     }
 
-    public static double[] getRoot(Function[] functions, Segment[] segments, double accuracy) throws IllegalArgumentException {
+    public static TwoVariablesResult getRoot(Function[] functions, Segment[] segments, double accuracy) throws IllegalArgumentException {
         Function[] phis = new Function[functions.length];
         for (int i=0; i<functions.length; i++) phis[i] = SimpleIterationMethodForSystemOfTwoEquations.buildPhi(functions[i], segments, i, accuracy);
 
@@ -76,13 +77,15 @@ public class SimpleIterationMethodForSystemOfTwoEquations {
             xPrevVector[i] = segments[i].getLeftBorder() - 2 * accuracy;
         }
 
+        int iterationsCount = 0;
         while (SimpleIterationMethodForSystemOfTwoEquations.getMaxVectorsDelta(xVector, xPrevVector) > accuracy) {
+            iterationsCount++;
             xPrevVector = xVector.clone();
             for (int i=0; i<xVector.length; i++) {
                 xVector[i] = phis[i].getValueByVariables(xPrevVector);
             }
         }
 
-        return xVector;
+        return new TwoVariablesResult(xVector, iterationsCount);
     }
 }

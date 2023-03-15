@@ -1,15 +1,15 @@
 package org.example.entities;
 
-public class OneVariableResult {
-    private double root;
+public class TwoVariablesResult {
+    private double[] root;
     private int iterationsCount;
 
-    public OneVariableResult(double root, int iterationsCount) {
+    public TwoVariablesResult(double[] root, int iterationsCount) {
         this.root = root;
         this.iterationsCount = iterationsCount;
     }
 
-    public Double getRoot() {
+    public double[] getRoot() {
         return this.root;
     }
 
@@ -20,8 +20,11 @@ public class OneVariableResult {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("x=");
-        builder.append(this.root);
+        builder.append("x_0=");
+        builder.append(this.root[0]);
+        builder.append(", ");
+        builder.append("x_1=");
+        builder.append(this.root[1]);
         builder.append("(число итераций: ");
         builder.append(this.iterationsCount);
         builder.append(")");

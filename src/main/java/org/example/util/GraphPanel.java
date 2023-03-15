@@ -5,15 +5,23 @@ import org.example.entities.GraphDot;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 import java.util.List;
 
 
-public class GraphPanel extends JPanel {
+public class GraphPanel extends JPanel implements MouseListener {
+    {
+        this.addMouseListener(this);
+    }
     private double leftBorder = Double.MAX_VALUE;
     private double rightBorder = -Double.MAX_VALUE;
     private double bottomBorder = Double.MAX_VALUE;
     private double topBorder = -Double.MAX_VALUE;
+    private double widthPerPixel = 1;
+    private double heightPerPixel = 1;
     private List<FunctionGraph> functionGraphs = new LinkedList<>();
 
     public void addFunctionGraph(FunctionGraph functionGraph) {
@@ -27,19 +35,17 @@ public class GraphPanel extends JPanel {
 
         graphics2D.setStroke(new BasicStroke(2));
         graphics2D.setFont(new Font("serif", Font.PLAIN, 20));
-        graphics2D.drawLine(0, 0, 100, 100);
 
         this.calculateHorizontalBorders();
 
-        double widthPerPixel = (this.rightBorder - this.leftBorder) / this.getWidth();
+        this.widthPerPixel = (this.rightBorder - this.leftBorder) / this.getWidth();
 
         List<List<GraphDot>> dotsList = new LinkedList<>();
-        for (FunctionGraph functionGraph: this.functionGraphs) dotsList.add(this.getFunctionGraphDots(functionGraph, widthPerPixel));
+        for (FunctionGraph functionGraph: this.functionGraphs) dotsList.add(this.getFunctionGraphDots(functionGraph));
 
-        double heightPerPixel = (this.topBorder - this.bottomBorder) / this.getHeight();
+        this.heightPerPixel = (this.topBorder - this.bottomBorder) / this.getHeight();
 
-        this.drawAxis(graphics2D, widthPerPixel, heightPerPixel);
-        for (List<GraphDot> dots: dotsList) this.plotGraphDots(graphics2D, dots, widthPerPixel, heightPerPixel);
+        for (List<GraphDot> dots: dotsList) this.plotGraphDots(graphics2D, dots);
     }
 
     private void calculateHorizontalBorders() {
@@ -49,7 +55,7 @@ public class GraphPanel extends JPanel {
         }
     }
 
-    private List<GraphDot> getFunctionGraphDots(FunctionGraph functionGraph, double widthPerPixel) {
+    private List<GraphDot> getFunctionGraphDots(FunctionGraph functionGraph) {
         List<GraphDot> dots = new LinkedList<>();
         int pixelNumber = 0;
         while (pixelNumber < this.getWidth()) {
@@ -63,40 +69,35 @@ public class GraphPanel extends JPanel {
         return dots;
     }
 
-    public void drawAxis(Graphics2D graphics, double widthPerPixel, double heightPerPixel) {
-        int verticalCoordinateOfHorizontalAxis;
-        if (this.bottomBorder >= 0) verticalCoordinateOfHorizontalAxis = this.getHeight();
-        else if (this.topBorder <= 0) verticalCoordinateOfHorizontalAxis = 0;
-        else verticalCoordinateOfHorizontalAxis = this.translateVerticalCoordinateToPixels(0, heightPerPixel);
-        graphics.drawLine(0, verticalCoordinateOfHorizontalAxis, this.getWidth(), verticalCoordinateOfHorizontalAxis);
-        for (int i=(int) Math.ceil(this.leftBorder); i<=this.rightBorder; i++) {
-            graphics.drawLine(this.translateHorizontalCoordinateToPixels(i, widthPerPixel), verticalCoordinateOfHorizontalAxis - 5, this.translateHorizontalCoordinateToPixels(i, widthPerPixel), verticalCoordinateOfHorizontalAxis + 5);
-            graphics.drawString(Integer.toString(i), this.translateHorizontalCoordinateToPixels(i, widthPerPixel) + 5, verticalCoordinateOfHorizontalAxis + 25);
-        }
-
-        int horizontalCoordinateOfVerticalAxis;
-        if (this.leftBorder >= 0) horizontalCoordinateOfVerticalAxis = 0;
-        else if (this.rightBorder <= 0) horizontalCoordinateOfVerticalAxis = this.getWidth();
-        else horizontalCoordinateOfVerticalAxis = this.translateHorizontalCoordinateToPixels(0, widthPerPixel);
-        graphics.drawLine(horizontalCoordinateOfVerticalAxis, 0, horizontalCoordinateOfVerticalAxis, this.getHeight());
-        for (int i=(int) Math.ceil(this.bottomBorder); i<=this.topBorder; i++) {
-            graphics.drawLine(horizontalCoordinateOfVerticalAxis - 5, this.translateVerticalCoordinateToPixels(i, heightPerPixel), horizontalCoordinateOfVerticalAxis + 5, this.translateVerticalCoordinateToPixels(i, heightPerPixel));
-            if (i != 0) graphics.drawString(Integer.toString(i), horizontalCoordinateOfVerticalAxis + 10, this.translateVerticalCoordinateToPixels(i, heightPerPixel) + 5);
-        }
-    }
-
-    private void plotGraphDots(Graphics2D graphics, List<GraphDot> dots, double widthPerPixel, double heightPerPixel) {
+    private void plotGraphDots(Graphics2D graphics, List<GraphDot> dots) {
         for (GraphDot dot: dots) {
-            graphics.drawLine(this.translateHorizontalCoordinateToPixels(dot.getHorizontalCoordinate(), widthPerPixel), this.translateVerticalCoordinateToPixels(dot.getVerticalCoordinate(), heightPerPixel),
-                    this.translateHorizontalCoordinateToPixels(dot.getHorizontalCoordinate(), widthPerPixel), this.translateVerticalCoordinateToPixels(dot.getVerticalCoordinate(), heightPerPixel));
+            graphics.drawLine(this.translateHorizontalCoordinateToPixels(dot.getHorizontalCoordinate()), this.translateVerticalCoordinateToPixels(dot.getVerticalCoordinate()),
+                    this.translateHorizontalCoordinateToPixels(dot.getHorizontalCoordinate()), this.translateVerticalCoordinateToPixels(dot.getVerticalCoordinate()));
         }
     }
 
-    private int translateHorizontalCoordinateToPixels(double coordinate, double widthPerPixel) {
+    private int translateHorizontalCoordinateToPixels(double coordinate) {
         return (int) ((coordinate - this.leftBorder) / widthPerPixel);
     }
 
-    private int translateVerticalCoordinateToPixels(double coordinate, double heightPerPixel) {
+    private int translateVerticalCoordinateToPixels(double coordinate) {
         return (int) (this.getHeight() - 1 - ((coordinate - this.bottomBorder) / heightPerPixel));
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println((this.leftBorder + e.getX() * this.widthPerPixel) + " " + (this.bottomBorder + e.getY() * this.heightPerPixel));
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
 }
