@@ -2,6 +2,7 @@ package org.example.entities;
 
 import org.example.calculatingTree.entities.Node;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -56,4 +57,6 @@ public class Function {
     public double getSecondDerivativeValue(double x, double accuracy) {
         return (this.getValueByVariable(x + accuracy) - 2 * this.getValueByVariable(x) + this.getValueByVariable(x - accuracy)) / Math.pow(accuracy, 2);
     }
+
+    //public func
 }
