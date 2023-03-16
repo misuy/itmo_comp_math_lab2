@@ -108,7 +108,6 @@ public class Main {
 
         System.out.println("Теперь введите левую границу интервала для x_0: ");
         double x0LeftBorder = scanner.nextDouble();
-        System.out.println(x0LeftBorder);
         System.out.println("Правую: ");
         double x0RightBorder = scanner.nextDouble();
         System.out.println("Теперь левую границу для x_1: ");
@@ -127,8 +126,8 @@ public class Main {
 
         System.out.println("Корень " + root + ";");
 
-        FunctionByTwoVariablesGraph graph0 = new FunctionByTwoVariablesGraph(functions[0], segments, 0.01);
-        FunctionByTwoVariablesGraph graph1 = new FunctionByTwoVariablesGraph(functions[1], segments, 0.01);
+        FunctionByTwoVariablesGraph graph0 = new FunctionByTwoVariablesGraph(functions[0], segments, 0.005);
+        FunctionByTwoVariablesGraph graph1 = new FunctionByTwoVariablesGraph(functions[1], segments, 0.005);
         panel.addFunctionGraph(graph0);
         panel.addFunctionGraph(graph1);
     }

@@ -35,7 +35,9 @@ public class SimpleIterationMethodForSystemOfTwoEquations {
             }
             xVector[0] += stepSize;
         }
+        System.out.println(maxDerivative);
         if (maxDerivative < accuracy) throw new IllegalArgumentException();
+        System.out.println(maxDerivative);
         return - lambdaSign / maxDerivative;
     }
 

@@ -45,6 +45,7 @@ public class GraphPanel extends JPanel implements MouseListener {
 
         this.heightPerPixel = (this.topBorder - this.bottomBorder) / this.getHeight();
 
+        this.drawAxis(graphics2D);
         for (List<GraphDot> dots: dotsList) this.plotGraphDots(graphics2D, dots);
     }
 
@@ -76,6 +77,11 @@ public class GraphPanel extends JPanel implements MouseListener {
         }
     }
 
+    private void drawAxis(Graphics2D graphics) {
+        graphics.drawLine(0, this.translateVerticalCoordinateToPixels(0), this.getWidth(), this.translateVerticalCoordinateToPixels(0));
+        graphics.drawLine(this.translateHorizontalCoordinateToPixels(0), 0, this.translateHorizontalCoordinateToPixels(0), this.getHeight());
+    }
+
     private int translateHorizontalCoordinateToPixels(double coordinate) {
         return (int) ((coordinate - this.leftBorder) / widthPerPixel);
     }
@@ -86,7 +92,7 @@ public class GraphPanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println((this.leftBorder + e.getX() * this.widthPerPixel) + " " + (this.bottomBorder + e.getY() * this.heightPerPixel));
+        System.out.println("horizontal: " + (this.leftBorder + e.getX() * this.widthPerPixel) + ", vertical: " + (this.bottomBorder + (this.getHeight() - e.getY()) * this.heightPerPixel));
     }
 
     @Override
